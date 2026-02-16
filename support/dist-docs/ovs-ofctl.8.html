@@ -1645,36 +1645,44 @@
               certificates cannot be verified to be  those  of  known  trusted
               hosts.
 
+       <b>--ssl-server-name=</b><u>servername</u>
+              Specifies  the server name to use for TLS Server Name Indication
+              (SNI).  By default, the hostname from the connection  string  is
+              used  for  SNI.  This option allows overriding the SNI hostname,
+              which is useful  when  connecting  through  proxies  or  service
+              meshes  where  the connection endpoint differs from the intended
+              server name.
+
        <b>-v</b>[<u>spec</u>]
        <b>--verbose=</b>[<u>spec</u>]
-              Sets  logging  levels.  Without any <u>spec</u>, sets the log level for
-              every module and destination to <b>dbg</b>.  Otherwise, <u>spec</u> is a  list
+              Sets logging levels.  Without any <u>spec</u>, sets the log  level  for
+              every  module and destination to <b>dbg</b>.  Otherwise, <u>spec</u> is a list
               of words separated by spaces or commas or colons, up to one from
               each category below:
 
-              •      A  valid  module name, as displayed by the <b>vlog/list</b> com‐
+              •      A valid module name, as displayed by the  <b>vlog/list</b>  com‐
                      mand on <b>ovs-appctl</b>(8), limits the log level change to the
                      specified module.
 
-              •      <b>syslog</b>, <b>console</b>, or <b>file</b>, to limit the log  level  change
-                     to  only to the system log, to the console, or to a file,
-                     respectively.   (If  <b>--detach</b>  is  specified,   <b>ovs-ofctl</b>
-                     closes  its  standard file descriptors, so logging to the
+              •      <b>syslog</b>,  <b>console</b>,  or <b>file</b>, to limit the log level change
+                     to only to the system log, to the console, or to a  file,
+                     respectively.    (If  <b>--detach</b>  is  specified,  <b>ovs-ofctl</b>
+                     closes its standard file descriptors, so logging  to  the
                      console will have no effect.)
 
-                     On Windows platform, <b>syslog</b> is accepted as a word and  is
-                     only  useful  along  with the <b>--syslog-target</b> option (the
+                     On  Windows platform, <b>syslog</b> is accepted as a word and is
+                     only useful along with the  <b>--syslog-target</b>  option  (the
                      word has no effect otherwise).
 
-              •      <b>off</b>, <b>emer</b>, <b>err</b>, <b>warn</b>, <b>info</b>, or <b>dbg</b>, to  control  the  log
-                     level.   Messages of the given severity or higher will be
-                     logged, and messages of lower severity will  be  filtered
-                     out.   <b>off</b>  filters  out all messages.  See <b>ovs-appctl</b>(8)
+              •      <b>off</b>,  <b>emer</b>,  <b>err</b>,  <b>warn</b>, <b>info</b>, or <b>dbg</b>, to control the log
+                     level.  Messages of the given severity or higher will  be
+                     logged,  and  messages of lower severity will be filtered
+                     out.  <b>off</b> filters out all  messages.   See  <b>ovs-appctl</b>(8)
                      for a definition of each log level.
 
               Case is not significant within <u>spec</u>.
 
-              Regardless of the log levels set for <b>file</b>,  logging  to  a  file
+              Regardless  of  the  log  levels set for <b>file</b>, logging to a file
               will not take place unless <b>--log-file</b> is also specified (see be‐
               low).
 
@@ -1683,33 +1691,33 @@
 
        <b>-v</b>
        <b>--verbose</b>
-              Sets  the  maximum logging verbosity level, equivalent to <b>--ver‐</b>
+              Sets the maximum logging verbosity level, equivalent  to  <b>--ver‐</b>
               <b>bose=dbg</b>.
 
        <b>-vPATTERN:</b><u>destination</u><b>:</b><u>pattern</u>
        <b>--verbose=PATTERN:</b><u>destination</u><b>:</b><u>pattern</u>
-              Sets the log pattern  for  <u>destination</u>  to  <u>pattern</u>.   Refer  to
+              Sets  the  log  pattern  for  <u>destination</u>  to <u>pattern</u>.  Refer to
               <b>ovs-appctl</b>(8) for a description of the valid syntax for <u>pattern</u>.
 
        <b>-vFACILITY:</b><u>facility</u>
        <b>--verbose=FACILITY:</b><u>facility</u>
-              Sets  the  RFC5424  facility of the log message. <u>facility</u> can be
-              one of <b>kern</b>, <b>user</b>, <b>mail</b>, <b>daemon</b>, <b>auth</b>, <b>syslog</b>, <b>lpr</b>, <b>news</b>,  <b>uucp</b>,
-              <b>clock</b>,  <b>ftp</b>,  <b>ntp</b>, <b>audit</b>, <b>alert</b>, <b>clock2</b>, <b>local0</b>, <b>local1</b>, <b>local2</b>,
-              <b>local3</b>, <b>local4</b>, <b>local5</b>, <b>local6</b> or <b>local7</b>. If this option is  not
-              specified,  <b>daemon</b>  is  used as the default for the local system
-              syslog and <b>local0</b> is used while sending a message to the  target
+              Sets the RFC5424 facility of the log message.  <u>facility</u>  can  be
+              one  of <b>kern</b>, <b>user</b>, <b>mail</b>, <b>daemon</b>, <b>auth</b>, <b>syslog</b>, <b>lpr</b>, <b>news</b>, <b>uucp</b>,
+              <b>clock</b>, <b>ftp</b>, <b>ntp</b>, <b>audit</b>, <b>alert</b>, <b>clock2</b>, <b>local0</b>,  <b>local1</b>,  <b>local2</b>,
+              <b>local3</b>,  <b>local4</b>, <b>local5</b>, <b>local6</b> or <b>local7</b>. If this option is not
+              specified, <b>daemon</b> is used as the default for  the  local  system
+              syslog  and <b>local0</b> is used while sending a message to the target
               provided via the <b>--syslog-target</b> option.
 
        <b>--log-file</b>[<b>=</b><u>file</u>]
-              Enables  logging  to  a  file.  If <u>file</u> is specified, then it is
-              used as the exact name for the log file.  The default  log  file
-              name   used  if  <u>file</u>  is  omitted  is  <b>/usr/local/var/log/open‐</b>
+              Enables logging to a file.  If <u>file</u> is  specified,  then  it  is
+              used  as  the exact name for the log file.  The default log file
+              name  used  if  <u>file</u>  is  omitted  is   <b>/usr/local/var/log/open‐</b>
               <b>vswitch/ovs-ofctl.log</b>.
 
        <b>--syslog-target=</b><u>host</u><b>:</b><u>port</u>
-              Send syslog messages to UDP <u>port</u> on <u>host</u>,  in  addition  to  the
-              system  syslog.   The <u>host</u> must be a numerical IP address, not a
+              Send  syslog  messages  to  UDP <u>port</u> on <u>host</u>, in addition to the
+              system syslog.  The <u>host</u> must be a numerical IP address,  not  a
               hostname.
 
        <b>--syslog-method=</b><u>method</u>
@@ -1717,76 +1725,76 @@
               mon.  Following forms are supported:
 
               •      <b>libc</b>, use libc <b>syslog()</b> function.  Downside of using this
-                     options is that libc adds fixed prefix to  every  message
-                     before  it  is  actually  sent  to the syslog daemon over
+                     options  is  that libc adds fixed prefix to every message
+                     before it is actually sent  to  the  syslog  daemon  over
                      <b>/dev/log</b> UNIX domain socket.
 
               •      <b>unix:</b><u>file</u>, use UNIX domain socket directly.  It is possi‐
                      ble to specify arbitrary message format with this option.
-                     However, <b>rsyslogd</b> <b>8.9</b> and older versions use  hard  coded
-                     parser  function  anyway  that  limits UNIX domain socket
-                     use.  If you want to use arbitrary  message  format  with
+                     However,  <b>rsyslogd</b>  <b>8.9</b> and older versions use hard coded
+                     parser function anyway that  limits  UNIX  domain  socket
+                     use.   If  you  want to use arbitrary message format with
                      older <b>rsyslogd</b> versions, then use UDP socket to localhost
                      IP address instead.
 
               •      <b>udp:</b><u>ip</u>:<u>port</u>, use UDP socket.  With this method it is pos‐
-                     sible  to  use  arbitrary  message format also with older
-                     <b>rsyslogd</b>.  When sending syslog messages over  UDP  socket
-                     extra  precaution needs to be taken into account, for ex‐
-                     ample, syslog daemon needs to be configured to listen  on
-                     the  specified  UDP port, accidental iptables rules could
-                     be interfering with local syslog traffic  and  there  are
-                     some  security  considerations that apply to UDP sockets,
+                     sible to use arbitrary message  format  also  with  older
+                     <b>rsyslogd</b>.   When  sending syslog messages over UDP socket
+                     extra precaution needs to be taken into account, for  ex‐
+                     ample,  syslog daemon needs to be configured to listen on
+                     the specified UDP port, accidental iptables  rules  could
+                     be  interfering  with  local syslog traffic and there are
+                     some security considerations that apply to  UDP  sockets,
                      but do not apply to UNIX domain sockets.
 
               •      <b>null</b>, discards all messages logged to syslog.
 
-              The default is  taken  from  the  <b>OVS_SYSLOG_METHOD</b>  environment
+              The  default  is  taken  from  the <b>OVS_SYSLOG_METHOD</b> environment
               variable; if it is unset, the default is <b>libc</b>.
 
        <b>--color</b>[<b>=</b><u>when</u>]
-              Colorize  the output (for some commands); <u>when</u> can be <b>never</b>, <b>al‐</b>
+              Colorize the output (for some commands); <u>when</u> can be <b>never</b>,  <b>al‐</b>
               <b>ways</b>, or <b>auto</b> (the default).
 
               Only some commands support output coloring.  Color names and de‐
               fault colors may change in future releases.
 
               The environment variable <b>OVS_COLORS</b> can be used to specify user-
-              defined colors and other attributes used  to  highlight  various
+              defined  colors  and  other attributes used to highlight various
               parts of the output. If set, its value is a colon-separated list
               of         capabilities         that         defaults         to
               <b>ac:01;31:dr=34:le=31:pm=36:pr=35:sp=33:vl=32</b>. Supported capabil‐
-              ities were initially designed for coloring flows from  <b>ovs-ofctl</b>
+              ities  were initially designed for coloring flows from <b>ovs-ofctl</b>
               <b>dump-flows</b> <u>switch</u> command, and they are as follows.
 
                      <b>ac=01;31</b>
                             SGR substring for <b>actions=</b> keyword in a flow.  The
                             default is a bold red text foreground.
 
-                     <b>dr=34</b>  SGR  substring for <b>drop</b> keyword.  The default is a
+                     <b>dr=34</b>  SGR substring for <b>drop</b> keyword.  The default is  a
                             dark blue text foreground.
 
-                     <b>le=31</b>  SGR substring for <b>learn=</b> keyword in a  flow.   The
+                     <b>le=31</b>  SGR  substring  for <b>learn=</b> keyword in a flow.  The
                             default is a red text foreground.
 
                      <b>pm=36</b>  SGR substring for flow match attribute names.  The
                             default is a cyan text foreground.
 
                      <b>pr=35</b>  SGR substring for keywords in a flow that are fol‐
-                            lowed  by  arguments  inside parenthesis.  The de‐
+                            lowed by arguments inside  parenthesis.   The  de‐
                             fault is a magenta text foreground.
 
                      <b>sp=33</b>  SGR substring for some special keywords in a flow,
                             notably: <b>table=</b>, <b>priority=</b>, <b>load:</b>, <b>output:</b>, <b>move:</b>,
-                            <b>group:</b>, <b>CONTROLLER:</b>, <b>set_field:</b>, <b>resubmit:</b>,  <b>exit</b>.
+                            <b>group:</b>,  <b>CONTROLLER:</b>, <b>set_field:</b>, <b>resubmit:</b>, <b>exit</b>.
                             The default is a yellow text foreground.
 
                      <b>vl=32</b>  SGR substring for a lone flow match attribute with
-                            no  field name.  The default is a green text fore‐
+                            no field name.  The default is a green text  fore‐
                             ground.
 
               See the Select Graphic Rendition (SGR) section in the documenta‐
-              tion of the text terminal that is used for permitted values  and
+              tion  of the text terminal that is used for permitted values and
               their meaning as character attributes.
 
        <b>-h</b>
@@ -1797,39 +1805,39 @@
               Prints version information to the console.
 
 <b>RUNTIME</b> <b>MANAGEMENT</b> <b>COMMANDS</b>
-       <b>ovs-appctl</b>(8)  can  send  commands to a running <b>ovs-ofctl</b> process.  The
+       <b>ovs-appctl</b>(8) can send commands to a running  <b>ovs-ofctl</b>  process.   The
        supported commands are listed below.
 
-       <b>exit</b>   Causes <b>ovs-ofctl</b> to gracefully terminate.  This command  applies
+       <b>exit</b>   Causes  <b>ovs-ofctl</b> to gracefully terminate.  This command applies
               only when executing the <b>monitor</b> or <b>snoop</b> commands.
 
        <b>ofctl/set-output-file</b> <u>file</u>
-              Causes  all  subsequent  output to go to <u>file</u> instead of stderr.
-              This command applies only when executing the  <b>monitor</b>  or  <b>snoop</b>
+              Causes all subsequent output to go to <u>file</u>  instead  of  stderr.
+              This  command  applies  only when executing the <b>monitor</b> or <b>snoop</b>
               commands.
 
        <b>ofctl/send</b> <u>ofmsg</u>...
               Sends each <u>ofmsg</u>, specified as a sequence of hex digits that ex‐
-              press  an  OpenFlow  message,  on the OpenFlow connection.  This
+              press an OpenFlow message, on  the  OpenFlow  connection.   This
               command is useful only when executing the <b>monitor</b> command.
 
        <b>ofctl/packet-out</b> <u>packet-out</u>
-              Sends an OpenFlow PACKET_OUT  message  specified  in  <b>Packet-Out</b>
-              <b>Syntax</b>,  on the OpenFlow connection.  See <b>Packet-Out</b> <b>Syntax</b> sec‐
+              Sends  an  OpenFlow  PACKET_OUT  message specified in <b>Packet-Out</b>
+              <b>Syntax</b>, on the OpenFlow connection.  See <b>Packet-Out</b> <b>Syntax</b>  sec‐
               tion for more information.  This command is useful only when ex‐
               ecuting the <b>monitor</b> command.
 
        <b>ofctl/barrier</b>
               Sends an OpenFlow barrier request on the OpenFlow connection and
-              waits for a reply.  This command is useful only for the  <b>monitor</b>
+              waits  for a reply.  This command is useful only for the <b>monitor</b>
               command.
 
 <b>EXAMPLES</b>
-       The  following examples assume that <b>ovs-vswitchd</b> has a bridge named <b>br0</b>
+       The following examples assume that <b>ovs-vswitchd</b> has a bridge named  <b>br0</b>
        configured.
 
        <b>ovs-ofctl</b> <b>dump-tables</b> <b>br0</b>
-              Prints out the switch's table stats.  (This is more  interesting
+              Prints  out the switch's table stats.  (This is more interesting
               after some traffic has passed through.)
 
        <b>ovs-ofctl</b> <b>dump-flows</b> <b>br0</b>
@@ -1837,7 +1845,7 @@
 
        <b>ovs-ofctl</b> <b>add-flow</b> <b>table=0</b> <b>actions=learn(table=1,hard_timeout=10,</b>
        <b>NXM_OF_VLAN_TCI[0..11],output:NXM_OF_IN_PORT[]),</b> <b>resubmit(,1)</b>
-              <b>ovs-ofctl</b>  <b>add-flow</b>  <b>table=1</b> <b>priority=0</b> <b>actions=flood</b> Implements
+              <b>ovs-ofctl</b> <b>add-flow</b>  <b>table=1</b> <b>priority=0</b> <b>actions=flood</b>  Implements
               a level 2 MAC learning switch using the learn.
 
        <b>ovs-ofctl</b> <b>add-flow</b> <b>br0</b> <b>'table=0,priority=0</b> <b>ac‐</b>
@@ -1847,15 +1855,15 @@
               In this use of a learn action, the first packet from each source
               MAC will be sent to port 2. Subsequent packets will be output to
               port 3, with an idle timeout of 10 seconds.  NXM field names and
-              match field names are both accepted, e.g.  <b>NXM_NX_REG0</b>  or  <b>reg0</b>
+              match  field  names  are both accepted, e.g. <b>NXM_NX_REG0</b> or <b>reg0</b>
               for the first register, and empty brackets may be omitted.
 
-              Additional  examples  may be found documented as part of related
+              Additional examples may be found documented as part  of  related
               sections.
 
 <b>SEE</b> <b>ALSO</b>
        <b>ovs-fields</b>(7),    <b>ovs-actions</b>(7),    <b>ovs-appctl</b>(8),    <b>ovs-vswitchd</b>(8),
        <b>ovs-vswitchd.conf.db</b>(8)
 
-Open vSwitch                         3.6.2                        <u>ovs-ofctl</u>(8)
+Open vSwitch                         3.7.0                        <u>ovs-ofctl</u>(8)
 </pre></body></html>

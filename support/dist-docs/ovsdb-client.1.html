@@ -63,6 +63,7 @@
               [<b>--private-key=</b><u>privkey.pem</u>]
               [<b>--certificate=</b><u>cert.pem</u>]
               [<b>--ca-cert=</b><u>cacert.pem</u>]
+              [<b>--ssl-server-name=</b><u>servername</u>]
               [<b>--bootstrap-ca-cert=</b><u>cacert.pem</u>]
 
        SSL/TLS connection options:
@@ -673,18 +674,26 @@
               certificates  cannot  be  verified  to be those of known trusted
               hosts.
 
+       <b>--ssl-server-name=</b><u>servername</u>
+              Specifies the server name to use for TLS Server Name  Indication
+              (SNI).   By  default, the hostname from the connection string is
+              used for SNI.  This option allows overriding the  SNI  hostname,
+              which  is  useful  when  connecting  through  proxies or service
+              meshes where the connection endpoint differs from  the  intended
+              server name.
+
        <b>--bootstrap-ca-cert=</b><u>cacert.pem</u>
               When <u>cacert.pem</u> exists, this option has the same effect as <b>-C</b> or
               <b>--ca-cert</b>.  If it does not exist, then <b>ovsdb-client</b> will attempt
-              to obtain the CA certificate from the SSL/TLS peer on its  first
-              SSL/TLS  connection and save it to the named PEM file.  If it is
-              successful, it will immediately drop the connection  and  recon‐
+              to  obtain the CA certificate from the SSL/TLS peer on its first
+              SSL/TLS connection and save it to the named PEM file.  If it  is
+              successful,  it  will immediately drop the connection and recon‐
               nect, and from then on all SSL/TLS connections must be authenti‐
-              cated  by  a  certificate  signed by the CA certificate thus ob‐
+              cated by a certificate signed by the  CA  certificate  thus  ob‐
               tained.
 
-              <b>This</b> <b>option</b> <b>exposes</b> <b>the</b> <b>SSL/TLS</b> <b>connection</b> <b>to</b> <b>a</b>  <b>man-in-the-mid‐</b>
-              <b>dle</b>  <b>attack</b>  <b>obtaining</b> <b>the</b> <b>initial</b> <b>CA</b> <b>certificate</b>, but it may be
+              <b>This</b>  <b>option</b> <b>exposes</b> <b>the</b> <b>SSL/TLS</b> <b>connection</b> <b>to</b> <b>a</b> <b>man-in-the-mid‐</b>
+              <b>dle</b> <b>attack</b> <b>obtaining</b> <b>the</b> <b>initial</b> <b>CA</b> <b>certificate</b>, but it  may  be
               useful for bootstrapping.
 
               This option is only useful if the SSL/TLS peer sends its CA cer‐
@@ -695,52 +704,52 @@
 
    <b>SSL/TLS</b> <b>Connection</b> <b>Options</b>
        <b>--ssl-protocols=</b><u>protocols</u>
-              Specifies a range or a comma- or  space-delimited  list  of  the
-              SSL/TLS  protocols  <b>ovsdb-client</b> will enable for SSL/TLS connec‐
+              Specifies  a  range  or  a comma- or space-delimited list of the
+              SSL/TLS protocols <b>ovsdb-client</b> will enable for  SSL/TLS  connec‐
               tions.  Supported <u>protocols</u> include <b>TLSv1.2</b> and <b>TLSv1.3</b>.  Ranges
               can be provided in a form of two protocol names separated with a
-              dash, or as a single protocol name with a plus sign.  For  exam‐
-              ple,  use  <b>TLSv1.2-TLSv1.3</b>  to  allow  <b>TLSv1.2</b> and <b>TLSv1.3</b>.  Use
-              <b>TLSv1.2+</b> to allow <b>TLSv1.2</b> and any later  protocol.   The  option
-              accepts  a list of protocols or exactly one range.  The range is
-              a preferred way of specifying protocols and  the  option  always
-              behaves  as  if  the  range  between the minimum and the maximum
-              specified version is provided, i.e., if the  option  is  set  to
-              <b>TLSv1.X,TLSv1.(X+2)</b>,  the <b>TLSv1.(X+1)</b> will also be enabled as if
-              it was a range.  Regardless of order, the highest protocol  sup‐
-              ported  by both sides will be chosen when making the connection.
+              dash,  or as a single protocol name with a plus sign.  For exam‐
+              ple, use <b>TLSv1.2-TLSv1.3</b> to  allow  <b>TLSv1.2</b>  and  <b>TLSv1.3</b>.   Use
+              <b>TLSv1.2+</b>  to  allow  <b>TLSv1.2</b> and any later protocol.  The option
+              accepts a list of protocols or exactly one range.  The range  is
+              a  preferred  way  of specifying protocols and the option always
+              behaves as if the range between  the  minimum  and  the  maximum
+              specified  version  is  provided,  i.e., if the option is set to
+              <b>TLSv1.X,TLSv1.(X+2)</b>, the <b>TLSv1.(X+1)</b> will also be enabled as  if
+              it  was a range.  Regardless of order, the highest protocol sup‐
+              ported by both sides will be chosen when making the  connection.
               The default when this option is omitted is <b>TLSv1.2</b> or later.
 
        <b>--ssl-ciphers=</b><u>ciphers</u>
-              Specifies,  in  OpenSSL  cipher  string  format,   the   ciphers
-              <b>ovsdb-client</b>  will support for SSL/TLS connections with TLSv1.2.
+              Specifies,   in   OpenSSL  cipher  string  format,  the  ciphers
+              <b>ovsdb-client</b> will support for SSL/TLS connections with  TLSv1.2.
               The default when this option is omitted is <b>DEFAULT:@SECLEVEL=2</b>.
 
        <b>--ssl-ciphersuites=</b><u>ciphersuites</u>
-              Specifies, in OpenSSL ciphersuite  string  format,  the  cipher‐
-              suites  <b>ovsdb-client</b>  will  support for SSL/TLS connections with
+              Specifies,  in  OpenSSL  ciphersuite  string format, the cipher‐
+              suites <b>ovsdb-client</b> will support for  SSL/TLS  connections  with
               TLSv1.3 and later.  Default value from OpenSSL will be used when
               this option is omitted.
 
    <b>Other</b> <b>Options</b>
        <b>--record[=</b><u>directory</u>]
-              Sets the process in "recording" mode, in which  it  will  record
-              all  the connections, data from streams (Unix domain and network
-              sockets) and some other important necessary bits, so they  could
-              be  replayed  later.  Recorded data is stored in replay files in
-              specified <u>directory</u>.  If <u>directory</u> does not begin with <b>/</b>, it  is
-              interpreted  as  relative to <b>/usr/local/var/run/openvswitch</b>.  If
-              <u>directory</u> is not specified, <b>/usr/local/var/run/openvswitch</b>  will
+              Sets  the  process  in "recording" mode, in which it will record
+              all the connections, data from streams (Unix domain and  network
+              sockets)  and some other important necessary bits, so they could
+              be replayed later.  Recorded data is stored in replay  files  in
+              specified  <u>directory</u>.  If <u>directory</u> does not begin with <b>/</b>, it is
+              interpreted as relative to  <b>/usr/local/var/run/openvswitch</b>.   If
+              <u>directory</u>  is not specified, <b>/usr/local/var/run/openvswitch</b> will
               be used.
 
        <b>--replay[=</b><u>directory</u>]
-              Sets  the process in "replay" mode, in which it will read infor‐
-              mation about connections, data from  streams  (Unix  domain  and
+              Sets the process in "replay" mode, in which it will read  infor‐
+              mation  about  connections,  data  from streams (Unix domain and
               network sockets) and some other necessary bits directly from re‐
               play files instead of using real sockets.  Replay files from the
-              <u>directory</u>  will be used.  If <u>directory</u> does not begin with <b>/</b>, it
-              is interpreted as  relative  to  <b>/usr/local/var/run/openvswitch</b>.
-              If  <u>directory</u>  is  not specified, <b>/usr/local/var/run/openvswitch</b>
+              <u>directory</u> will be used.  If <u>directory</u> does not begin with <b>/</b>,  it
+              is  interpreted  as  relative to <b>/usr/local/var/run/openvswitch</b>.
+              If <u>directory</u> is  not  specified,  <b>/usr/local/var/run/openvswitch</b>
               will be used.
 
        <b>-h</b>
@@ -753,5 +762,5 @@
 <b>SEE</b> <b>ALSO</b>
        <b>ovsdb</b>(7), <b>ovsdb-server</b>(1), <b>ovsdb-client</b>(1).
 
-Open vSwitch                         3.6.2                     <u>ovsdb-client</u>(1)
+Open vSwitch                         3.7.0                     <u>ovsdb-client</u>(1)
 </pre></body></html>

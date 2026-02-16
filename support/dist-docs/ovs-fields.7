@@ -1,6 +1,6 @@
 '\" tp
 .\" -*- mode: troff; coding: utf-8 -*-
-.TH "ovs\-fields" 7 "3.6.2" "Open vSwitch" "Open vSwitch Manual"
+.TH "ovs\-fields" 7 "3.7.0" "Open vSwitch" "Open vSwitch Manual"
 .fp 5 L CR              \" Make fixed-width font available as \fL.
 .de ST
 .  PP
@@ -3203,6 +3203,22 @@ Name;Bytes;Mask;RW?;Prereqs;NXM/OXM Support
 \fBreg13\fR;4;yes;yes;none;OVS 2.6+
 \fBreg14\fR;4;yes;yes;none;OVS 2.6+
 \fBreg15\fR;4;yes;yes;none;OVS 2.6+
+\fBreg16\fR;4;yes;yes;none;OVS 3.7+
+\fBreg17\fR;4;yes;yes;none;OVS 3.7+
+\fBreg18\fR;4;yes;yes;none;OVS 3.7+
+\fBreg19\fR;4;yes;yes;none;OVS 3.7+
+\fBreg20\fR;4;yes;yes;none;OVS 3.7+
+\fBreg21\fR;4;yes;yes;none;OVS 3.7+
+\fBreg22\fR;4;yes;yes;none;OVS 3.7+
+\fBreg23\fR;4;yes;yes;none;OVS 3.7+
+\fBreg24\fR;4;yes;yes;none;OVS 3.7+
+\fBreg25\fR;4;yes;yes;none;OVS 3.7+
+\fBreg26\fR;4;yes;yes;none;OVS 3.7+
+\fBreg27\fR;4;yes;yes;none;OVS 3.7+
+\fBreg28\fR;4;yes;yes;none;OVS 3.7+
+\fBreg29\fR;4;yes;yes;none;OVS 3.7+
+\fBreg30\fR;4;yes;yes;none;OVS 3.7+
+\fBreg31\fR;4;yes;yes;none;OVS 3.7+
 \fBxreg0\fR;8;yes;yes;none;OF 1.3+ and OVS 2.4+
 \fBxreg1\fR;8;yes;yes;none;OF 1.3+ and OVS 2.4+
 \fBxreg2\fR;8;yes;yes;none;OF 1.3+ and OVS 2.4+
@@ -3211,10 +3227,22 @@ Name;Bytes;Mask;RW?;Prereqs;NXM/OXM Support
 \fBxreg5\fR;8;yes;yes;none;OF 1.3+ and OVS 2.4+
 \fBxreg6\fR;8;yes;yes;none;OF 1.3+ and OVS 2.4+
 \fBxreg7\fR;8;yes;yes;none;OF 1.3+ and OVS 2.4+
+\fBxreg8\fR;8;yes;yes;none;OF 1.3+ and OVS 3.7+
+\fBxreg9\fR;8;yes;yes;none;OF 1.3+ and OVS 3.7+
+\fBxreg10\fR;8;yes;yes;none;OF 1.3+ and OVS 3.7+
+\fBxreg11\fR;8;yes;yes;none;OF 1.3+ and OVS 3.7+
+\fBxreg12\fR;8;yes;yes;none;OF 1.3+ and OVS 3.7+
+\fBxreg13\fR;8;yes;yes;none;OF 1.3+ and OVS 3.7+
+\fBxreg14\fR;8;yes;yes;none;OF 1.3+ and OVS 3.7+
+\fBxreg15\fR;8;yes;yes;none;OF 1.3+ and OVS 3.7+
 \fBxxreg0\fR;16;yes;yes;none;OVS 2.6+
 \fBxxreg1\fR;16;yes;yes;none;OVS 2.6+
 \fBxxreg2\fR;16;yes;yes;none;OVS 2.6+
 \fBxxreg3\fR;16;yes;yes;none;OVS 2.6+
+\fBxxreg4\fR;16;yes;yes;none;OVS 3.7+
+\fBxxreg5\fR;16;yes;yes;none;OVS 3.7+
+\fBxxreg6\fR;16;yes;yes;none;OVS 3.7+
+\fBxxreg7\fR;16;yes;yes;none;OVS 3.7+
 .TE
 .PP
 .PP
@@ -3271,7 +3299,28 @@ T}
 .TE
 .PP
 .PP
-This is the first of several Open vSwitch registers, all of which have the same properties\[char46] Open vSwitch 1\[char46]1 introduced registers 0, 1, 2, and 3, version 1\[char46]3 added register 4, version 1\[char46]7 added registers 5, 6, and 7, and version 2\[char46]6 added registers 8 through 15\[char46]
+.PP
+.PP
+This is the first of several Open vSwitch registers, all of which have the same properties\[char46] Open vSwitch 1\[char46]1 introduced registers 0, 1, 2, and 3, version 1\[char46]3 added register 4, version 1\[char46]7 added registers 5, 6, and 7, version 2\[char46]6 added registers 8 through 15, and version 3\[char46]7 added registers 16 through 31\[char46]
+.PP
+.PP
+Code points for registers 0 through 15 are defined within NXM_NX code point prefix, while registers 16 through 31 are defined within NXOXM_ET starting with \fBNXOXM_ET_REG16\fR (17), due to limited space within the NXM_NX class\[char46]
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
 .PP
 .PP
 .PP
@@ -3313,13 +3362,24 @@ T}
 .PP
 .PP
 .PP
-This is the first of the registers introduced in OpenFlow 1\[char46]5\[char46] OpenFlow 1\[char46]5 calls these fields just the ``packet registers,\(cq\(cq but Open vSwitch already had 32-bit registers by that name, so Open vSwitch uses the name ``extended registers\(cq\(cq in an attempt to reduce confusion\[char46] The standard allows for up to 128 registers, each 64 bits wide, but Open vSwitch only implements 4 (in versions 2\[char46]4 and 2\[char46]5) or 8 (in version 2\[char46]6 and later)\[char46]
+This is the first of the registers introduced in OpenFlow 1\[char46]5\[char46] OpenFlow 1\[char46]5 calls these fields just the ``packet registers,\(cq\(cq but Open vSwitch already had 32-bit registers by that name, so Open vSwitch uses the name ``extended registers\(cq\(cq in an attempt to reduce confusion\[char46] The standard allows for up to 128 registers, each 64 bits wide, but Open vSwitch only implements 4 (in versions 2\[char46]4 and 2\[char46]5), 8 (in version 2\[char46]6 and later), or 16 (in version 3\[char46]7 and later)\[char46]
+.PP
+.PP
+Code points for all of the extended registers are defined within \fBOXM_OF_PKT_REG\fR code point prefix\[char46]
 .PP
 .PP
 Each of the 64-bit extended registers overlays two of the 32-bit registers: \fBxreg0\fR overlays \fBreg0\fR and \fBreg1\fR, with \fBreg0\fR supplying the most-significant bits of \fBxreg0\fR and \fBreg1\fR the least-significant\[char46] Similarly, \fBxreg1\fR overlays \fBreg2\fR and \fBreg3\fR, and so on\[char46]
 .PP
 .PP
 The OpenFlow specification says, ``In most cases, the packet registers can not be matched in tables, i\[char46]e\[char46] they usually can not be used in the flow entry match structure\(cq\(cq [OpenFlow 1\[char46]5, section 7\[char46]2\[char46]3\[char46]10], but there is no reason for a software switch to impose such a restriction, and Open vSwitch does not\[char46]
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
+.PP
 .PP
 .PP
 .PP
@@ -3353,7 +3413,10 @@ T}
 .PP
 .PP
 .PP
-This is the first of the double-extended registers introduce in Open vSwitch 2\[char46]6\[char46] Each of the 128-bit extended registers overlays four of the 32-bit registers: \fBxxreg0\fR overlays \fBreg0\fR through \fBreg3\fR, with \fBreg0\fR supplying the most-significant bits of \fBxxreg0\fR and \fBreg3\fR the least-significant\[char46] \fBxxreg1\fR similarly overlays \fBreg4\fR through \fBreg7\fR, and so on\[char46]
+This is the first of the double-extended registers introduce in Open vSwitch 2\[char46]6\[char46] Each of the 128-bit extended registers overlays four of the 32-bit registers: \fBxxreg0\fR overlays \fBreg0\fR through \fBreg3\fR, with \fBreg0\fR supplying the most-significant bits of \fBxxreg0\fR and \fBreg3\fR the least-significant\[char46] \fBxxreg1\fR similarly overlays \fBreg4\fR through \fBreg7\fR, and so on\[char46] Open vSwitch only implements 4 128-bit registers (in versions 2\[char46]6 and later) and 8 (in version 3\[char46]7 and later)\[char46]
+.PP
+.PP
+Code points for double-extended registers 0 through 3 are defined within NXM_NX code point prefix, while registers 4 through 7 are defined within NXOXM_ET starting with \fBNXOXM_ET_XXREG4\fR (33), due to limited space within the NXM_NX class\[char46]
 .bp
 .SH "LAYER 2 (ETHERNET) FIELDS"
 .SS "Summary:"

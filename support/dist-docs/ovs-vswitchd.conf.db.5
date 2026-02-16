@@ -1,6 +1,6 @@
 '\" p
 .\" -*- nroff -*-
-.TH "ovs-vswitchd.conf.db" 5 " DB Schema 8.8.0" "Open vSwitch 3.6.2" "Open vSwitch Manual"
+.TH "ovs-vswitchd.conf.db" 5 " DB Schema 8.8.0" "Open vSwitch 3.7.0" "Open vSwitch Manual"
 .fp 5 L CR              \\" Make fixed-width font available as \\fL.
 .de TQ
 .  br
@@ -277,6 +277,9 @@ optional string, containing an integer, at least 0
 \fBother_config : hw-offload\fR
 optional string, either \fBtrue\fR or \fBfalse\fR
 .TQ 2.75in
+\fBother_config : hw-offload-priority\fR
+optional string
+.TQ 2.75in
 \fBother_config : n-offload-threads\fR
 optional string, containing an integer, in range 1 to 10
 .TQ 2.75in
@@ -549,6 +552,12 @@ The default value is \fBfalse\fR\[char46] Changing this value requires restartin
 Currently Open vSwitch supports hardware offloading on Linux systems\[char46] On other systems, this value is ignored\[char46] This functionality is considered \(cqexperimental\(cq\[char46] Depending on which OpenFlow matches and actions are configured, which kernel version is used, and what hardware is available, Open vSwitch may not be able to offload functionality to hardware\[char46]
 .IP
 In order to dump HW offloaded flows use \fBovs\-appctl dpctl/dump\-flows\fR, \fBovs\-dpctl\fR doesn\(cqt support this functionality\[char46] See ovs-vswitchd(8) for details\[char46]
+.IP "\fBother_config : hw-offload-priority\fR: optional string"
+This configuration sets the order of the hardware offload providers to try when multiple exist for a given datapath implementation\[char46] The argument provided should be a list of comma-separated hardware offload provider names\[char46]
+.IP
+If implementations are missing from the list, they are added at the end in undefined order\[char46]
+.IP
+The default value is \fBtc,dpdk\fR\[char46] Changing this value requires restarting the daemon if hardware offload is already enabled\[char46]
 .IP "\fBother_config : n-offload-threads\fR: optional string, containing an integer, in range 1 to 10"
 Set this value to the number of threads created to manage hardware offloads\[char46]
 .IP
@@ -585,9 +594,11 @@ Specifies the CPU cores where dpdk lcore threads should be spawned\[char46] The 
 .IP
 The lowest order bit corresponds to the first CPU core\[char46] A set bit means the corresponding core is available and an lcore thread will be created and pinned to it\[char46] If the input does not cover all cores, those uncovered cores are considered not set\[char46]
 .IP
-For performance reasons, it is best to set this to a single core on the system, rather than allow lcore threads to float\[char46]
+The lowest set core will be assigned in DPDK as the DPDK main thread\[char46] Other set bits will be assigned by DPDK as DPDK worker threads\[char46] As OVS implements its own threading for the datapath (see \fBother_config:pmd-cpu-mask\fR), DPDK worker threads will be unused\[char46]
 .IP
-If not specified, the value will be determined by choosing the lowest CPU core from initial cpu affinity list\[char46] Otherwise, the value will be passed directly to the DPDK library\[char46]
+If this option is specified, all OVS main, handler, and revalidator threads will be pinned to the selected DPDK main thread core\[char46] This means that potentially many threads will share a single CPU core, which may not be desirable for performance reasons\[char46]
+.IP
+If this option is not specified the value for DPDK initialization will be auto-determined and all OVS main, revalidator and handler threads will float on the OVS cpu affinity list\[char46]
 .IP "\fBother_config : pmd-cpu-mask\fR: optional string"
 Specifies CPU mask for setting the cpu affinity of PMD (Poll Mode Driver) threads\[char46] Value should be in the form of hex string, similar to the dpdk EAL \(cq-c COREMASK\(cq option input or the \(cqtaskset\(cq mask input\[char46]
 .IP
@@ -2103,9 +2114,6 @@ optional string
 \fBoptions : xdp-mode\fR
 optional string, one of \fBbest\-effort\fR, \fBgeneric\fR, \fBnative\-with\-zerocopy\fR, or \fBnative\fR
 .TQ 2.75in
-\fBoptions : use-need-wakeup\fR
-optional string, either \fBtrue\fR or \fBfalse\fR
-.TQ 2.75in
 \fBoptions : vhost-server-path\fR
 optional string
 .TQ 2.75in
@@ -2547,6 +2555,13 @@ optional string, either \fBtrue\fR or \fBfalse\fR
 optional string, either \fBtrue\fR or \fBfalse\fR
 .RE
 .TQ .25in
+\fIHardware Offload Configuration:\fR
+.RS .25in
+.TQ 2.75in
+\fBother_config : hw-offload-priority\fR
+optional string
+.RE
+.TQ .25in
 \fICommon Columns:\fR
 .RS .25in
 .TQ 2.75in
@@ -2868,8 +2883,6 @@ In \fBgeneric\fR case the XDP program in kernel works after skb allocation on ea
 \fBbest\-effort\fR tries to detect and choose the best (fastest) from the available modes for current interface\[char46]
 .IP
 Note that this option is specific to netdev-afxdp\[char46] Defaults to \fBbest\-effort\fR mode\[char46]
-.IP "\fBoptions : use-need-wakeup\fR: optional string, either \fBtrue\fR or \fBfalse\fR"
-Specifies whether to use need_wakeup feature in afxdp netdev\[char46] If enabled, OVS explicitly wakes up the kernel RX, using poll() syscall and wakes up TX, using sendto() syscall\[char46] For physical devices, this feature improves the performance by avoiding unnecessary sendto syscalls\[char46] Defaults to true if supported by libbpf\[char46]
 .IP "\fBoptions : vhost-server-path\fR: optional string"
 The value specifies the path to the socket associated with a vHost User client mode device that has been or will be created by QEMU\[char46] Only supported by dpdkvhostuserclient interfaces\[char46]
 .IP "\fBoptions : vhost-max-queue-pairs\fR: optional string, containing an integer, in range 1 to 128"
@@ -3325,6 +3338,24 @@ Set this value to \fBfalse\fR to configure poll mode for Link State Change (LSC)
 If this value is not set, interrupt mode is configured\[char46]
 .IP
 This parameter has an effect only on netdev dpdk interfaces\[char46]
+.ST "Hardware Offload Configuration:"
+.PP
+.IP "\fBother_config : hw-offload-priority\fR: optional string"
+This configuration sets an explicit list of hardware offload providers to try on this Interface\[char46] The argument should be a comma-separated list of hardware offload provider names, or the word \fBnone\fR\[char46]
+.IP
+If \fBnone\fR is encountered in the list, further trying of offload providers is stopped\[char46] For example, if the list only contains \fBnone\fR, hardware offload is disabled on this interface even if it is globally enabled\[char46] Note that unknown hardware offload provider names are ignored\[char46]
+.IP
+If not set, uses the global \fBother_config:hw-offload-priority\fR configuration\[char46] Changing this value after offload enablement requires restarting the daemon\[char46] To avoid restarting the daemon, set this option in the same transaction that adds the port\[char46] For example:
+.IP
+.nf
+\fB
+.br
+\fBovs\-vsctl add\-port br0 p1 \-\- \e
+.br
+\fB          set Interface p1 other_config:hw\-offload\-priority=none
+.br
+\fB       \fR
+.fi
 .ST "Common Columns:"
 .PP
 The overall purpose of these columns is described under \fBCommon

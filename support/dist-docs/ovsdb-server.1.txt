@@ -27,6 +27,7 @@ SYNOPSIS
               [--private-key=privkey.pem]
               [--certificate=cert.pem]
               [--ca-cert=cacert.pem]
+              [--ssl-server-name=servername]
               [--bootstrap-ca-cert=cacert.pem]
               [--peer-ca-cert=peer-cacert.pem]
 
@@ -509,18 +510,26 @@ OPTIONS
               certificates  cannot  be  verified  to be those of known trusted
               hosts.
 
+       --ssl-server-name=servername
+              Specifies the server name to use for TLS Server Name  Indication
+              (SNI).   By  default, the hostname from the connection string is
+              used for SNI.  This option allows overriding the  SNI  hostname,
+              which  is  useful  when  connecting  through  proxies or service
+              meshes where the connection endpoint differs from  the  intended
+              server name.
+
        --bootstrap-ca-cert=cacert.pem
               When cacert.pem exists, this option has the same effect as -C or
               --ca-cert.  If it does not exist, then ovsdb-server will attempt
-              to obtain the CA certificate from the SSL/TLS peer on its  first
-              SSL/TLS  connection and save it to the named PEM file.  If it is
-              successful, it will immediately drop the connection  and  recon‐
+              to  obtain the CA certificate from the SSL/TLS peer on its first
+              SSL/TLS connection and save it to the named PEM file.  If it  is
+              successful,  it  will immediately drop the connection and recon‐
               nect, and from then on all SSL/TLS connections must be authenti‐
-              cated  by  a  certificate  signed by the CA certificate thus ob‐
+              cated by a certificate signed by the  CA  certificate  thus  ob‐
               tained.
 
-              This option exposes the SSL/TLS connection to a  man-in-the-mid‐
-              dle  attack  obtaining the initial CA certificate, but it may be
+              This  option exposes the SSL/TLS connection to a man-in-the-mid‐
+              dle attack obtaining the initial CA certificate, but it  may  be
               useful for bootstrapping.
 
               This option is only useful if the SSL/TLS peer sends its CA cer‐
@@ -530,85 +539,85 @@ OPTIONS
               This option is mutually exclusive with -C and --ca-cert.
 
        --peer-ca-cert=peer-cacert.pem
-              Specifies a PEM file that contains one or more  additional  cer‐
-              tificates  to  send to SSL/TLS peers.  peer-cacert.pem should be
-              the CA certificate used to sign ovsdb-server's own  certificate,
-              that  is,  the certificate specified on -c or --certificate.  If
-              ovsdb-server's certificate is  self-signed,  then  --certificate
+              Specifies  a  PEM file that contains one or more additional cer‐
+              tificates to send to SSL/TLS peers.  peer-cacert.pem  should  be
+              the  CA certificate used to sign ovsdb-server's own certificate,
+              that is, the certificate specified on -c or  --certificate.   If
+              ovsdb-server's  certificate  is  self-signed, then --certificate
               and --peer-ca-cert should specify the same file.
 
-              This  option  is  not  useful  in  normal operation, because the
-              SSL/TLS peer must already have the CA certificate for  the  peer
-              to  have  any  confidence  in ovsdb-server's identity.  However,
-              this offers a way for a new installation  to  bootstrap  the  CA
+              This option is not  useful  in  normal  operation,  because  the
+              SSL/TLS  peer  must already have the CA certificate for the peer
+              to have any confidence  in  ovsdb-server's  identity.   However,
+              this  offers  a  way  for a new installation to bootstrap the CA
               certificate on its first SSL/TLS connection.
 
    SSL Connection Options
        --ssl-protocols=protocols
-              Specifies  a  range  or  a comma- or space-delimited list of the
-              SSL/TLS protocols ovsdb-server will enable for  SSL/TLS  connec‐
+              Specifies a range or a comma- or  space-delimited  list  of  the
+              SSL/TLS  protocols  ovsdb-server will enable for SSL/TLS connec‐
               tions.  Supported protocols include TLSv1.2 and TLSv1.3.  Ranges
               can be provided in a form of two protocol names separated with a
-              dash,  or as a single protocol name with a plus sign.  For exam‐
-              ple, use TLSv1.2-TLSv1.3 to  allow  TLSv1.2  and  TLSv1.3.   Use
-              TLSv1.2+  to  allow  TLSv1.2 and any later protocol.  The option
-              accepts a list of protocols or exactly one range.  The range  is
-              a  preferred  way  of specifying protocols and the option always
-              behaves as if the range between  the  minimum  and  the  maximum
-              specified  version  is  provided,  i.e., if the option is set to
-              TLSv1.X,TLSv1.(X+2), the TLSv1.(X+1) will also be enabled as  if
-              it  was a range.  Regardless of order, the highest protocol sup‐
-              ported by both sides will be chosen when making the  connection.
+              dash, or as a single protocol name with a plus sign.  For  exam‐
+              ple,  use  TLSv1.2-TLSv1.3  to  allow  TLSv1.2 and TLSv1.3.  Use
+              TLSv1.2+ to allow TLSv1.2 and any later  protocol.   The  option
+              accepts  a list of protocols or exactly one range.  The range is
+              a preferred way of specifying protocols and  the  option  always
+              behaves  as  if  the  range  between the minimum and the maximum
+              specified version is provided, i.e., if the  option  is  set  to
+              TLSv1.X,TLSv1.(X+2),  the TLSv1.(X+1) will also be enabled as if
+              it was a range.  Regardless of order, the highest protocol  sup‐
+              ported  by both sides will be chosen when making the connection.
               The default when this option is omitted is TLSv1.2 or later.
 
        --ssl-ciphers=ciphers
-              Specifies,   in   OpenSSL  cipher  string  format,  the  ciphers
-              ovsdb-server will support for SSL/TLS connections with  TLSv1.2.
+              Specifies,  in  OpenSSL  cipher  string  format,   the   ciphers
+              ovsdb-server  will support for SSL/TLS connections with TLSv1.2.
               The default when this option is omitted is DEFAULT:@SECLEVEL=2.
 
        --ssl-ciphersuites=ciphersuites
-              Specifies,  in  OpenSSL  ciphersuite  string format, the cipher‐
-              suites ovsdb-server will support for  SSL/TLS  connections  with
+              Specifies, in OpenSSL ciphersuite  string  format,  the  cipher‐
+              suites  ovsdb-server  will  support for SSL/TLS connections with
               TLSv1.3 and later.  Default value from OpenSSL will be used when
               this option is omitted.
 
    Other Options
        --unixctl=socket
-              Sets  the  name of the control socket on which ovsdb-server lis‐
-              tens for runtime management  commands  (see  RUNTIME  MANAGEMENT
+              Sets the name of the control socket on which  ovsdb-server  lis‐
+              tens  for  runtime  management  commands (see RUNTIME MANAGEMENT
               COMMANDS, below).  If socket does not begin with /, it is inter‐
-              preted   as   relative  to  /usr/local/var/run/openvswitch.   If
-              --unixctl is not used at all, the  default  socket  is  /usr/lo‐
+              preted  as  relative  to   /usr/local/var/run/openvswitch.    If
+              --unixctl  is  not  used  at all, the default socket is /usr/lo‐
               cal/var/run/openvswitch/ovsdb-server.pid.ctl,   where   pid   is
               ovsdb-server's process ID.
 
               On Windows a local named pipe is used to listen for runtime man‐
-              agement commands.  A file is created in  the  absolute  path  as
-              pointed  by socket or if --unixctl is not used at all, a file is
-              created as ovsdb-server.ctl in the configured OVS_RUNDIR  direc‐
-              tory.   The file exists just to mimic the behavior of a Unix do‐
+              agement  commands.   A  file  is created in the absolute path as
+              pointed by socket or if --unixctl is not used at all, a file  is
+              created  as ovsdb-server.ctl in the configured OVS_RUNDIR direc‐
+              tory.  The file exists just to mimic the behavior of a Unix  do‐
               main socket.
 
               Specifying none for socket disables the control socket feature.
 
        --record[=directory]
-              Sets the process in "recording" mode, in which  it  will  record
-              all  the connections, data from streams (Unix domain and network
-              sockets) and some other important necessary bits, so they  could
-              be  replayed  later.  Recorded data is stored in replay files in
-              specified directory.  If directory does not begin with /, it  is
-              interpreted  as  relative to /usr/local/var/run/openvswitch.  If
-              directory is not specified, /usr/local/var/run/openvswitch  will
+              Sets  the  process  in "recording" mode, in which it will record
+              all the connections, data from streams (Unix domain and  network
+              sockets)  and some other important necessary bits, so they could
+              be replayed later.  Recorded data is stored in replay  files  in
+              specified  directory.  If directory does not begin with /, it is
+              interpreted as relative to  /usr/local/var/run/openvswitch.   If
+              directory  is not specified, /usr/local/var/run/openvswitch will
               be used.
 
        --replay[=directory]
-              Sets  the process in "replay" mode, in which it will read infor‐
-              mation about connections, data from  streams  (Unix  domain  and
+              Sets the process in "replay" mode, in which it will read  infor‐
+              mation  about  connections,  data  from streams (Unix domain and
               network sockets) and some other necessary bits directly from re‐
               play files instead of using real sockets.  Replay files from the
-              directory  will be used.  If directory does not begin with /, it
-              is interpreted as  relative  to  /usr/local/var/run/openvswitch.
-              If  directory  is  not specified, /usr/local/var/run/openvswitch
+              directory will be used.  If directory does not begin with /,  it
+              is  interpreted  as  relative to /usr/local/var/run/openvswitch.
+              If directory is  not  specified,  /usr/local/var/run/openvswitch
               will be used.
 
        -h
@@ -630,16 +639,16 @@ RUNTIME MANAGEMENT COMMANDS
        ovsdb-server/compact [db]
               Compacts database db in-place.  If db is not specified, compacts
               every database in-place.  A database is also compacted automati‐
-              cally when a transaction is logged if it  is  over  2  times  as
-              large  as  its previous compacted size (and at least 10 MB), but
-              not before 100 commits  have  been  added  or  10  minutes  have
+              cally  when  a  transaction  is  logged if it is over 2 times as
+              large as its previous compacted size (and at least 10  MB),  but
+              not  before  100  commits  have  been  added  or 10 minutes have
               elapsed since the last compaction. It will also be compacted au‐
               tomatically after 24 hours since the last compaction if 100 com‐
               mits were added regardless of its size.
 
        ovsdb-server/memory-trim-on-compaction on|off
-              If  this  option is on, ovsdb-server will try to reclaim all un‐
-              used heap memory back to the system after each successful  data‐
+              If this option is on, ovsdb-server will try to reclaim  all  un‐
+              used  heap memory back to the system after each successful data‐
               base compaction to reduce the memory consumption of the process.
               off by default.
 
@@ -647,54 +656,54 @@ RUNTIME MANAGEMENT COMMANDS
               Makes ovsdb-server drop all of the JSON-RPC connections to data‐
               base clients and reconnect.
 
-              This  command might be useful for debugging issues with database
+              This command might be useful for debugging issues with  database
               clients.
 
        ovsdb-server/add-remote remote
-              Adds a remote, as if --remote=remote had been specified  on  the
+              Adds  a  remote, as if --remote=remote had been specified on the
               ovsdb-server command line.  (If remote is already a remote, this
               command succeeds without changing the configuration.)
 
               Mutually exclusive with the --config-file option.
 
        ovsdb-server/remove-remote remote
-              Removes  the  specified  remote  from the configuration, failing
-              with an error if remote is not configured  as  a  remote.   This
-              command  only  works with remotes that were named on --remote or
-              ovsdb-server/add-remote, that is, it  will  not  remove  remotes
-              added  indirectly  because  they  were read from the database by
-              configuring a db:db,table,column  remote.   (You  can  remove  a
+              Removes the specified remote  from  the  configuration,  failing
+              with  an  error  if  remote is not configured as a remote.  This
+              command only works with remotes that were named on  --remote  or
+              ovsdb-server/add-remote,  that  is,  it  will not remove remotes
+              added indirectly because they were read  from  the  database  by
+              configuring  a  db:db,table,column  remote.   (You  can remove a
               database source with ovsdb-server/remove-remote db:db,table,col‐
-              umn,  but  not  individual  remotes found indirectly through the
+              umn, but not individual remotes  found  indirectly  through  the
               database.)
 
               Mutually exclusive with the --config-file option.
 
        ovsdb-server/list-remotes
-              Outputs a list of the  currently  configured  remotes  named  on
-              --remote  or  ovsdb-server/add-remote, that is, it does not list
-              remotes added indirectly because they were read from  the  data‐
+              Outputs  a  list  of  the  currently configured remotes named on
+              --remote or ovsdb-server/add-remote, that is, it does  not  list
+              remotes  added  indirectly because they were read from the data‐
               base by configuring a db:db,table,column remote.
 
        ovsdb-server/add-db database
-              Adds  the  database to the running ovsdb-server.  database could
-              be a database file or a relay description in the following  for‐
-              mat:  relay:schema_name:remote.   The database file must already
+              Adds the database to the running ovsdb-server.   database  could
+              be  a database file or a relay description in the following for‐
+              mat: relay:schema_name:remote.  The database file  must  already
               have been created and initialized using, for example, ovsdb-tool
               create.
 
               Mutually exclusive with the --config-file option.
 
        ovsdb-server/remove-db database
-              Removes database from the running ovsdb-server.   database  must
+              Removes  database  from the running ovsdb-server.  database must
               be a database name as listed by ovsdb-server/list-dbs.
 
-              If  a  remote  has  been configured that points to the specified
-              database (e.g. --remote=db:database,... on  the  command  line),
-              then  it  will  be disabled until another database with the same
+              If a remote has been configured that  points  to  the  specified
+              database  (e.g.  --remote=db:database,...  on the command line),
+              then it will be disabled until another database  with  the  same
               name is added again (with ovsdb-server/add-db).
 
-              Any public key infrastructure  options  specified  through  this
+              Any  public  key  infrastructure  options specified through this
               database  (e.g.  --private-key=db:database,...  on  the  command
               line) will be disabled until another database with the same name
               is added again (with ovsdb-server/add-db).
@@ -702,25 +711,25 @@ RUNTIME MANAGEMENT COMMANDS
               Mutually exclusive with the --config-file option.
 
        ovsdb-server/list-dbs
-              Outputs a list of the currently configured databases  added  ei‐
+              Outputs  a  list of the currently configured databases added ei‐
               ther through the command line or through the ovsdb-server/add-db
               command.
 
        ovsdb-server/tlog-set database:table on|off
-              Enables  or  disables  logging of all operations executed on the
-              specified database and table.  Logs are generated at INFO  level
+              Enables or disables logging of all operations  executed  on  the
+              specified  database and table.  Logs are generated at INFO level
               and are rate limtied.
 
        ovsdb-server/tlog-list
-              Displays  the  logging  state for all currently configured data‐
+              Displays the logging state for all  currently  configured  data‐
               bases and tables.
 
    Active-Backup Commands
-       These commands query and update the role of ovsdb-server within an  ac‐
+       These  commands query and update the role of ovsdb-server within an ac‐
        tive-backup pair of servers.  See Active-Backup Options, above, and Ac‐
        tive-Backup Database Service Model in ovsdb(7) for more information.
 
-       All  Active-Backup  Commands  that change the state of ovsdb-server are
+       All Active-Backup Commands that change the state  of  ovsdb-server  are
        mutually exclusive with the --config-file option.
 
        ovsdb-server/set-active-ovsdb-server server
@@ -733,20 +742,20 @@ RUNTIME MANAGEMENT COMMANDS
               chronizing its databases.
 
        ovsdb-server/connect-active-ovsdb-server
-              Switches  the  server  to a backup role.  The server starts syn‐
-              chronizing its databases with the  active  server  specified  by
-              ovsdb-server/set-active-ovsdb-server  (or  the  --sync-from com‐
-              mand-line option) and closes all  existing  client  connections,
+              Switches the server to a backup role.  The  server  starts  syn‐
+              chronizing  its  databases  with  the active server specified by
+              ovsdb-server/set-active-ovsdb-server (or  the  --sync-from  com‐
+              mand-line  option)  and  closes all existing client connections,
               which requires clients to reconnect.
 
        ovsdb-server/disconnect-active-ovsdb-server
-              Switches  the  server  to an active role.  The server stops syn‐
-              chronizing its databases with an active server  and  closes  all
-              existing  client  connections,  which requires clients to recon‐
+              Switches the server to an active role.  The  server  stops  syn‐
+              chronizing  its  databases  with an active server and closes all
+              existing client connections, which requires  clients  to  recon‐
               nect.
 
        ovsdb-server/set-active-ovsdb-server-probe-interval probe interval
-              Sets  the probe interval (in milli seconds) for  the  connection
+              Sets   the  probe interval (in milli seconds) for the connection
               to active server.
 
        ovsdb-server/set-sync-exclude-tables db:table[,db:table]...
@@ -759,30 +768,30 @@ RUNTIME MANAGEMENT COMMANDS
               tion.
 
        ovsdb-server/sync-status
-              Prints  a summary of replication run time information. The state
+              Prints a summary of replication run time information. The  state
               information is always provided, indicating whether the server is
-              running in the active or the backup  mode.   For  all  databases
+              running  in  the  active  or the backup mode.  For all databases
               with active-backup service model, replication connection status,
               which can be either connecting, replicating or error, are shown.
-              When  the  connection  is  in  replicating state, further output
+              When the connection is  in  replicating  state,  further  output
               shows the tables that are currently excluded from replication.
 
    Cluster Commands
-       These commands support the ovsdb-server clustered service model.   They
-       apply  only  to  databases  in the format used for clustered databases,
-       which is the database format created by ovsdb-tool  create-cluster  and
+       These  commands support the ovsdb-server clustered service model.  They
+       apply only to databases in the format  used  for  clustered  databases,
+       which  is  the database format created by ovsdb-tool create-cluster and
        ovsdb-tool join-cluster.
 
        cluster/cid db
-              Prints  the  cluster  ID for db, which is a UUID that identifies
-              the cluster.  If db is a database newly  created  by  ovsdb-tool
-              cluster-join  that  has not yet successfully joined its cluster,
-              and --cid was not specified on the  cluster-join  command  line,
+              Prints the cluster ID for db, which is a  UUID  that  identifies
+              the  cluster.   If  db is a database newly created by ovsdb-tool
+              cluster-join that has not yet successfully joined  its  cluster,
+              and  --cid  was  not specified on the cluster-join command line,
               then this command will report an error because the cluster ID is
               not yet known.
 
        cluster/sid db
-              Prints  the  server  ID  for db, which is a UUID that identifies
+              Prints the server ID for db, which is  a  UUID  that  identifies
               this server within the cluster.
 
        cluster/status db
@@ -790,98 +799,98 @@ RUNTIME MANAGEMENT COMMANDS
               its connections to other servers in the cluster.
 
        cluster/leave db
-              This command starts the server gracefully removing  itself  from
-              its  cluster.   At least one server must remain, and the cluster
-              must be healthy, that is, over half  of  the  cluster's  servers
+              This  command  starts the server gracefully removing itself from
+              its cluster.  At least one server must remain, and  the  cluster
+              must  be  healthy,  that  is, over half of the cluster's servers
               must be up.
 
-              When  the server successfully leaves the cluster, it stops serv‐
+              When the server successfully leaves the cluster, it stops  serv‐
               ing db, as if ovsdb-server/remove-db db had been executed.
 
-              Use ovsdb-client wait (see ovsdb-client(1)) to  wait  until  the
+              Use  ovsdb-client  wait  (see ovsdb-client(1)) to wait until the
               server has left the cluster.
 
-              Once  a  server  leaves  a cluster, it may never rejoin it.  In‐
+              Once a server leaves a cluster, it may  never  rejoin  it.   In‐
               stead, create a new server and join it to the cluster.
 
-              Note that removing the server from the cluster alters the  total
+              Note  that removing the server from the cluster alters the total
               size of the cluster. For example, if you remove two servers from
-              a  three  server  cluster,  then  the "cluster" becomes a single
-              functioning server.  This does not  result  in  a  three  server
+              a three server cluster, then  the  "cluster"  becomes  a  single
+              functioning  server.   This  does  not  result in a three server
               cluster that lacks quorum.
 
        cluster/kick db server
-              Start  graceful  removal of server from db's cluster, like clus‐
-              ter/leave, except that it can remove any server, not  just  this
+              Start graceful removal of server from db's cluster,  like  clus‐
+              ter/leave,  except  that it can remove any server, not just this
               one.
 
-              server  may  be  a  server ID, as printed by cluster/sid, or the
-              server's local network address as passed  to  ovsdb-tool's  cre‐
-              ate-cluster  or join-cluster command.  Use cluster/status to see
+              server may be a server ID, as printed  by  cluster/sid,  or  the
+              server's  local  network  address as passed to ovsdb-tool's cre‐
+              ate-cluster or join-cluster command.  Use cluster/status to  see
               a list of cluster members.
 
        cluster/change-election-timer db time
               Change the leader election timeout base value of the cluster, in
               milliseconds.
 
-              Leader election will be initiated by a follower if there  is  no
-              heartbeat  received from the leader within this time plus a ran‐
+              Leader  election  will be initiated by a follower if there is no
+              heartbeat received from the leader within this time plus a  ran‐
               dom time within 1 second.
 
-              The default value is 1000, if not  changed  with  this  command.
+              The  default  value  is  1000, if not changed with this command.
               This command can be used to adjust the value when necessary, ac‐
               cording to the expected load and response time of the servers.
 
-              This  command  must be executed on the leader.  It initiates the
-              change to the cluster.  To see if the change takes effect  (com‐
+              This command must be executed on the leader.  It  initiates  the
+              change  to the cluster.  To see if the change takes effect (com‐
               mitted), use cluster/status to show the current setting.  Once a
               change is committed, it persists at server restarts.
 
        cluster/set-backlog-threshold db n_msgs n_bytes
-              Sets  the  backlog limits for db's RAFT connections to a maximum
-              of n_msgs messages or n_bytes bytes.  If the backlog on  one  of
-              the  connections reaches the limit, it will be disconnected (and
-              re-established).  Values are checked only if  the  backlog  con‐
+              Sets the backlog limits for db's RAFT connections to  a  maximum
+              of  n_msgs  messages or n_bytes bytes.  If the backlog on one of
+              the connections reaches the limit, it will be disconnected  (and
+              re-established).   Values  are  checked only if the backlog con‐
               tains more than 50 messages.
 
    VLOG COMMANDS
        These commands manage ovsdb-server's logging settings.
 
        vlog/set [spec]
-              Sets  logging  levels.  Without any spec, sets the log level for
-              every module and destination to dbg.  Otherwise, spec is a  list
+              Sets logging levels.  Without any spec, sets the log  level  for
+              every  module and destination to dbg.  Otherwise, spec is a list
               of words separated by spaces or commas or colons, up to one from
               each category below:
 
-              •      A  valid  module name, as displayed by the vlog/list com‐
+              •      A valid module name, as displayed by the  vlog/list  com‐
                      mand on ovs-appctl(8), limits the log level change to the
                      specified module.
 
-              •      syslog, console, or file, to limit the log  level  change
-                     to  only to the system log, to the console, or to a file,
+              •      syslog,  console,  or file, to limit the log level change
+                     to only to the system log, to the console, or to a  file,
                      respectively.
 
-                     On Windows platform, syslog is accepted as a word and  is
-                     only  useful  along  with the --syslog-target option (the
+                     On  Windows platform, syslog is accepted as a word and is
+                     only useful along with the  --syslog-target  option  (the
                      word has no effect otherwise).
 
-              •      off, emer, err, warn, info, or dbg, to  control  the  log
-                     level.   Messages of the given severity or higher will be
-                     logged, and messages of lower severity will  be  filtered
-                     out.   off  filters  out all messages.  See ovs-appctl(8)
+              •      off,  emer,  err,  warn, info, or dbg, to control the log
+                     level.  Messages of the given severity or higher will  be
+                     logged,  and  messages of lower severity will be filtered
+                     out.  off filters out all  messages.   See  ovs-appctl(8)
                      for a definition of each log level.
 
               Case is not significant within spec.
 
-              Regardless of the log levels set for file,  logging  to  a  file
-              will  not  take  place  unless ovsdb-server was invoked with the
+              Regardless  of  the  log  levels set for file, logging to a file
+              will not take place unless ovsdb-server  was  invoked  with  the
               --log-file option.
 
               For compatibility with older versions of OVS, any is accepted as
               a word but has no effect.
 
        vlog/set PATTERN:destination:pattern
-              Sets the log pattern  for  destination  to  pattern.   Refer  to
+              Sets  the  log  pattern  for  destination  to pattern.  Refer to
               ovs-appctl(8) for a description of the valid syntax for pattern.
 
        vlog/list
@@ -891,47 +900,47 @@ RUNTIME MANAGEMENT COMMANDS
               Lists logging patterns used for each destination.
 
        vlog/close
-              Causes  ovsdb-server to close its log file, if it is open.  (Use
+              Causes ovsdb-server to close its log file, if it is open.   (Use
               vlog/reopen to reopen it later.)
 
        vlog/reopen
-              Causes ovsdb-server to close its log file, if it  is  open,  and
-              then  reopen  it.   (This is useful after rotating log files, to
+              Causes  ovsdb-server  to  close its log file, if it is open, and
+              then reopen it.  (This is useful after rotating  log  files,  to
               cause a new log file to be used.)
 
-              This has no effect unless  ovsdb-server  was  invoked  with  the
+              This  has  no  effect  unless  ovsdb-server was invoked with the
               --log-file option.
 
        vlog/disable-rate-limit [module]...
        vlog/enable-rate-limit [module]...
-              By  default,  ovsdb-server limits the rate at which certain mes‐
-              sages can be logged.  When a  message  would  appear  more  fre‐
-              quently  than  the  limit,  it  is  suppressed.  This saves disk
-              space, makes logs easier to read, and speeds up  execution,  but
-              occasionally  troubleshooting  requires more detail.  Therefore,
+              By default, ovsdb-server limits the rate at which  certain  mes‐
+              sages  can  be  logged.   When  a message would appear more fre‐
+              quently than the limit,  it  is  suppressed.   This  saves  disk
+              space,  makes  logs easier to read, and speeds up execution, but
+              occasionally troubleshooting requires more  detail.   Therefore,
               vlog/disable-rate-limit allows rate limits to be disabled at the
-              level of an individual log module.  Specify one or  more  module
+              level  of  an individual log module.  Specify one or more module
               names, as displayed by the vlog/list command.  Specifying either
-              no  module  names at all or the keyword any disables rate limits
+              no module names at all or the keyword any disables  rate  limits
               for every log module.
 
-              The vlog/enable-rate-limit command, whose syntax is the same  as
-              vlog/disable-rate-limit,  can  be used to re-enable a rate limit
+              The  vlog/enable-rate-limit command, whose syntax is the same as
+              vlog/disable-rate-limit, can be used to re-enable a  rate  limit
               that was previously disabled.
 
    MEMORY COMMANDS
        These commands report memory usage.
 
        memory/show
-              Displays some basic statistics about ovsdb-server's  memory  us‐
+              Displays  some  basic statistics about ovsdb-server's memory us‐
               age.  ovsdb-server also logs this information soon after startup
               and periodically as its memory consumption grows.
 
    COVERAGE COMMANDS
        These commands manage ovsdb-server's ``coverage counters,'' which count
-       the  number of times particular events occur during a daemon's runtime.
+       the number of times particular events occur during a daemon's  runtime.
        In addition to these commands, ovsdb-server automatically logs coverage
-       counter values, at INFO level, when it detects that the  daemon's  main
+       counter  values,  at INFO level, when it detects that the daemon's main
        loop takes unusually long to run.
 
        Coverage counters are useful mainly for performance analysis and debug‐
@@ -939,7 +948,7 @@ RUNTIME MANAGEMENT COMMANDS
 
        coverage/show
               Displays the averaged per-second rates for the last few seconds,
-              the  last  minute and the last hour, and the total counts of all
+              the last minute and the last hour, and the total counts  of  all
               of the coverage counters.
 
        coverage/read-counter counter
@@ -948,7 +957,7 @@ RUNTIME MANAGEMENT COMMANDS
 BUGS
        In Open vSwitch before version 2.4, when ovsdb-server sent JSON-RPC er‐
        ror responses to some requests, it incorrectly formulated them with the
-       result and error swapped, so that the  response  appeared  to  indicate
+       result  and  error  swapped,  so that the response appeared to indicate
        success (with a nonsensical result) rather than an error.  The requests
        that suffered from this problem were:
 
@@ -960,16 +969,16 @@ BUGS
        lock
        unlock In all error cases.
 
-       Of  these  cases,  the  only  error  that a well-written application is
+       Of these cases, the only  error  that  a  well-written  application  is
        likely to encounter in practice is monitor of tables or columns that do
-       not exist, in an situation where the application has been upgraded  but
-       the  old  database  schema is still temporarily in use.  To handle this
-       situation gracefully, we recommend that clients should treat a  monitor
-       response  with a result that contains an error key-value pair as an er‐
-       ror (assuming that the database being monitored does not contain a  ta‐
+       not  exist, in an situation where the application has been upgraded but
+       the old database schema is still temporarily in use.   To  handle  this
+       situation  gracefully, we recommend that clients should treat a monitor
+       response with a result that contains an error key-value pair as an  er‐
+       ror  (assuming that the database being monitored does not contain a ta‐
        ble named error).
 
 SEE ALSO
        ovsdb(7), ovsdb-tool(1), ovsdb-server(5), ovsdb-server(7).
 
-Open vSwitch                         3.6.2                     ovsdb-server(1)
+Open vSwitch                         3.7.0                     ovsdb-server(1)
