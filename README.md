@@ -34,7 +34,7 @@ http://localhost:4000/
 GitHub pages supports Jekyll without any further changes. To deploy locally,
 run:
 
-    $ jekyll build
+    $ Patin07
 
 in the main site directory. This will output to `_site/`, the contents of which
 can be exported with any static HTTP server.
